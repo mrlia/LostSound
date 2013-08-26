@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<script type="text/javascript" src="base64.js"></script>
+<script type="text/javascript" src="canvas2image.js"></script>
+<body onload="main()">
+<canvas id="f" width="10000" height="600" style="border:1px" ></canvas>
+<div id="f_div">
+Val:<span id="part_number">0</span><br>
+Splicing:<span id="splicing">none</span>
+<form>
+	<button type="button" onclick="save_image()">Save</button>
+</form>
+</div>
+<script>
+  var canvas = document.getElementById("f");
+  var context = canvas.getContext("2d");
+  var positions = [];
+  var colours = [];
+  var nb_elements = 1;
+  var validStrokeChars = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
+  var floor_pos = 550;
+  function main(){
+    for (var i=0; i<nb_elements; i++){
+      positions[i] = Math.random()*600;
+    }
+	context.fillStyle = "rgb(0,30,100)";
+	context.fillRect(0, 0, 10000, 600);
+	for (var i=0; i<60; i++){
+		context.fillStyle = "rgb(130,30,"+(40+(i*2))+")";
+		context.fillRect(0, i*10, 10000, 10);
+	}
+	show_things();
+  }
+  
+  function random_color(){
+	var stroke = "#";
+	for (var i=0; i<3; i++) {
+		stroke = stroke + validStrokeChars[Math.floor(Math.random()*16)];
+	}
+	return stroke;
+  }
+  
+  function show_things(){
+  	for (var i = 0; i<1000; i++) {
+  	  for (var j=0;j<nb_elements;j++){
+  	    paint_floor(i);
+  	    paint_stars(i);
+  	  }
+  	}
+  }
+  
+  function paint_floor(position) {
+  	context.fillStyle = "rgb(0,150,80)";
+	context.fillRect(10*position, floor_pos, 10, 600-floor_pos);
+	var grassLines = Math.floor(Math.random()*6)+6;
+
+  	context.strokeStyle = "rgb(0,120,120)";
+	context.beginPath();
+	for (var i=0; i<grassLines; i++){
+		var base = 10*position+Math.random()*10;
+		var head = base + Math.random()*6-3;
+		var length = Math.random()*18;
+		context.moveTo(base, floor_pos);
+		context.lineTo(head, floor_pos-length);
+	}
+	context.closePath();
+	context.stroke();
+  }
+  
+  function paint_stars(position) {
+  	if (Math.random()<0.4){
+  		context.fillStyle = "rgb(200,200,0)";
+  		var starPos = 10*position+Math.floor(Math.random()*10);
+  		context.fillRect(starPos, Math.random()*300, 3, 3);
+  	}
+  }
+ 
+  
+  function save_image(){
+    Canvas2Image.saveAsJPEG(canvas);
+  }
+  
+</script>
+</body>
